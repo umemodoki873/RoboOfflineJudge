@@ -182,6 +182,14 @@ def markdown_as_pre(md: str) -> str:
     return f"<pre class='statement'>{html.escape(md)}</pre>"
 
 
+def build_starter_code(problem: Problem | None) -> str:
+    if problem is None:
+        return ""
+    if problem.problem_id == "001_add":
+        return "A, B = map(int, input().split())\n# この下からコードを書こう\n"
+    return "# この下からコードを書こう\n"
+
+
 def render_page(problems: List[Problem], selected: str = "", code: str = "", verdict: str = "", results: List[CaseResult] | None = None) -> str:
     options = []
     selected_problem = None
@@ -193,6 +201,9 @@ def render_page(problems: List[Problem], selected: str = "", code: str = "", ver
     if selected_problem is None and problems:
         selected_problem = problems[0]
         selected = selected_problem.dir_name
+
+    if not code:
+        code = build_starter_code(selected_problem)
 
     statement_html = markdown_as_pre(selected_problem.statement_md) if selected_problem else "<p>問題がありません。</p>"
     compare_mode = selected_problem.compare if selected_problem else "-"
