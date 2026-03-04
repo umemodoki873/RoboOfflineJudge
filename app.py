@@ -318,15 +318,18 @@ tr:last-child td {{ border-bottom: 0; }}
 <h1>🐣 やさしい Python ジャッジ</h1>
 <p class='subtitle'>しょうがっこう ていがくねんむけ 🌈 じぶんのペースで チャレンジしよう！</p>
 </div>
-<form method='post' action='/submit'>
 <div class='card'>
-<label>問題選択</label><br>
-<select name='problem_dir'>{''.join(options)}</select>
+<form method='get' action='/'>
+<label for='problem_dir'>問題選択</label><br>
+<select id='problem_dir' name='problem_dir' onchange='this.form.submit()'>{''.join(options)}</select>
+</form>
 <p class='compare'>くらべかた: <b>{html.escape(compare_mode)}</b></p>
 <h3>問題文</h3>{statement_html}
 </div>
+<form method='post' action='/submit'>
 <div class='card'>
 <h3>コード入力</h3>
+<input type='hidden' name='problem_dir' value='{html.escape(selected)}'>
 <textarea name='code'>{html.escape(code)}</textarea><br>
 <button type='submit'>🚀 ていしゅつして チェック！</button>
 </div>
@@ -357,7 +360,9 @@ class Handler(BaseHTTPRequestHandler):
             self._respond_html("<h1>Not Found</h1>", status=HTTPStatus.NOT_FOUND)
             return
         problems = load_problems()
-        self._respond_html(render_page(problems))
+        query = parse_qs(parsed.query)
+        selected = query.get("problem_dir", [""])[0]
+        self._respond_html(render_page(problems, selected=selected))
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
