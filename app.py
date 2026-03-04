@@ -220,32 +220,116 @@ def render_page(problems: List[Problem], selected: str = "", code: str = "", ver
                 f"<tr><td colspan='3'>{details}</td></tr>"
             )
 
-    verdict_html = f"<h2>Verdict: {verdict}</h2>" if verdict else ""
+    verdict_class = "verdict-ac" if verdict == "AC" else "verdict-ng"
+    verdict_label = "💮 せいかい！" if verdict == "AC" else "💪 もういちど やってみよう！"
+    verdict_html = f"<h2 class='verdict {verdict_class}'>{verdict_label}</h2>" if verdict else ""
     return f"""<!doctype html>
 <html lang='ja'><head><meta charset='utf-8'><title>Robo Offline Judge</title>
 <style>
-body {{ font-family: sans-serif; margin: 20px; }}
-textarea {{ width: 100%; min-height: 260px; font-family: monospace; }}
-.statement {{ background: #f7f7f7; padding: 12px; white-space: pre-wrap; }}
-table {{ border-collapse: collapse; width: 100%; }}
-td, th {{ border: 1px solid #ddd; padding: 6px; vertical-align: top; }}
+:root {{
+  --bg: #fffaf2;
+  --card: #ffffff;
+  --text: #374151;
+  --mint: #b9f4d1;
+  --sky: #d6ecff;
+  --peach: #ffe2c4;
+  --line: #f4c585;
+}}
+* {{ box-sizing: border-box; }}
+body {{
+  margin: 0;
+  font-family: "Hiragino Maru Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at top, #fffdf8 0%, var(--bg) 65%);
+}}
+.page {{ max-width: 980px; margin: 0 auto; padding: 18px; }}
+.header {{
+  background: linear-gradient(135deg, var(--sky), #f4f9ff);
+  border: 3px solid #8cc8ff;
+  border-radius: 22px;
+  padding: 18px;
+  margin-bottom: 16px;
+}}
+h1 {{ margin: 0; font-size: 34px; }}
+.subtitle {{ margin: 8px 0 0; font-size: 18px; }}
+.card {{
+  background: var(--card);
+  border: 3px solid var(--line);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 0 rgba(244, 197, 133, 0.35);
+}}
+label, h3 {{ font-size: 22px; margin: 8px 0; }}
+select, button {{ font-size: 20px; border-radius: 12px; border: 2px solid #8cc8ff; padding: 8px 12px; }}
+select {{ background: #f8fdff; }}
+.compare {{ background: var(--mint); border-radius: 14px; padding: 8px 12px; font-size: 18px; display: inline-block; }}
+textarea {{
+  width: 100%;
+  min-height: 280px;
+  font-family: "M PLUS Rounded 1c", "Consolas", monospace;
+  font-size: 18px;
+  border-radius: 14px;
+  border: 3px solid #8cc8ff;
+  padding: 12px;
+  background: #fcfeff;
+}}
+button {{
+  margin-top: 10px;
+  background: linear-gradient(180deg, #ffd797, var(--peach));
+  border: 2px solid #f9a048;
+  font-weight: bold;
+  cursor: pointer;
+}}
+.statement {{
+  background: #fffef8;
+  border: 2px dashed #8cc8ff;
+  border-radius: 14px;
+  padding: 12px;
+  white-space: pre-wrap;
+  font-size: 17px;
+  line-height: 1.6;
+}}
+.verdict {{
+  border-radius: 16px;
+  padding: 10px 14px;
+  text-align: center;
+  font-size: 28px;
+}}
+.verdict-ac {{ background: #c8f7d7; border: 3px solid #41ba70; }}
+.verdict-ng {{ background: #ffe3cc; border: 3px solid #ff8a3d; }}
+table {{ border-collapse: separate; border-spacing: 0; width: 100%; background: #fff; border: 3px solid #8cc8ff; border-radius: 14px; overflow: hidden; }}
+td, th {{ border-bottom: 1px solid #c9e5ff; padding: 8px; vertical-align: top; font-size: 17px; }}
+th {{ background: #eaf5ff; }}
+tr:last-child td {{ border-bottom: 0; }}
 </style></head>
 <body>
-<h1>オフラインPythonジャッジ v0.1</h1>
+<div class='page'>
+<div class='header'>
+<h1>🐣 やさしい Python ジャッジ</h1>
+<p class='subtitle'>しょうがっこう ていがくねんむけ 🌈 じぶんのペースで チャレンジしよう！</p>
+</div>
 <form method='post' action='/submit'>
+<div class='card'>
 <label>問題選択</label><br>
 <select name='problem_dir'>{''.join(options)}</select>
-<p>比較モード: <b>{html.escape(compare_mode)}</b></p>
+<p class='compare'>くらべかた: <b>{html.escape(compare_mode)}</b></p>
 <h3>問題文</h3>{statement_html}
+</div>
+<div class='card'>
 <h3>コード入力</h3>
 <textarea name='code'>{html.escape(code)}</textarea><br>
-<button type='submit'>提出して実行</button>
+<button type='submit'>🚀 ていしゅつして チェック！</button>
+</div>
 </form>
 {verdict_html}
+<div class='card'>
 <table>
-<tr><th>ケース名</th><th>ステータス</th><th>実行時間(ms)</th></tr>
+<tr><th>テスト</th><th>けっか</th><th>じかん(ms)</th></tr>
 {table_rows}
 </table>
+</div>
+</div>
 </body></html>"""
 
 
