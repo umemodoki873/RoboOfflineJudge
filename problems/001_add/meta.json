@@ -1,0 +1,6 @@
+{
+  "id": "001_add",
+  "title": "A+B",
+  "time_limit_sec": 2.0,
+  "compare": "trim"
+}
