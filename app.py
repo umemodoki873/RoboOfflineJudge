@@ -144,7 +144,7 @@ def run_case(code: str, case: TestCase, time_limit_sec: float) -> CaseResult:
             if completed.returncode != 0:
                 status = "RE"
             else:
-                status = "AC" if compare_output(expected, completed.stdout, "trim") else "WA"
+                status = "OK"
             return CaseResult(
                 name=case.name,
                 status=status,
@@ -169,10 +169,8 @@ def judge(problem: Problem, code: str) -> tuple[str, List[CaseResult]]:
     results = []
     for case in problem.tests:
         result = run_case(code, case, problem.time_limit_sec)
-        if result.status == "AC":
-            # compare mode per problem
-            if not compare_output(result.expected, result.stdout, problem.compare):
-                result.status = "WA"
+        if result.status == "OK":
+            result.status = "AC" if compare_output(result.expected, result.stdout, problem.compare) else "WA"
         results.append(result)
         if result.status != "AC":
             verdict = "NG"
